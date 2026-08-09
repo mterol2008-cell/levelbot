@@ -11,11 +11,12 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent
-  ]
+    GatewayIntentBits.GuildMembers
+  ] 
 });
 
 const LEVEL_CHANNEL_ID = '1536057096301191168';
-
+const BOOST_CHANNEL_ID = '1536077701935276084';
 const DATA_FILE = process.env.RAILWAY_VOLUME_MOUNT_PATH
   ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/levels.json`
   : './levels.json';
@@ -94,8 +95,28 @@ client.on('messageCreate', async (message) => {
       );
     }
   }
-
+});
   saveData();
 });
 
+
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+  const oncekiBoost = oldMember.premiumSince;
+  const yeniBoost = newMember.premiumSince;
+
+  if (!oncekiBoost && yeniBoost) {
+    const boostChannel = newMember.guild.channels.cache.get(BOOST_CHANNEL_ID);
+    if (!boostChannel) return;
+
+    try {
+      const mesaj = await boostChannel.send(
+        `💗 ${newMember} az önce sunucuya takviye yaptı!`
+      );
+
+      await mesaj.react('🎀');
+    } catch (error) {
+      console.error('Boost bildirimi gönderilemedi:', error);
+    }
+  }
+});
 client.login(process.env.TOKEN);
