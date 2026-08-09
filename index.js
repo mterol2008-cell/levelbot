@@ -16,7 +16,9 @@ const client = new Client({
 
 const LEVEL_CHANNEL_ID = '1536057096301191168';
 
-const DATA_FILE = './levels.json';
+const DATA_FILE = process.env.RAILWAY_VOLUME_MOUNT_PATH
+  ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/levels.json`
+  : './levels.json';
 
 let xpData = {};
 const cooldowns = new Map();
