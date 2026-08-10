@@ -302,4 +302,18 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     }
   }
 });
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
+
+  if (message.content === '!boosttest') {
+    const boostChannel = message.guild.channels.cache.get(BOOST_CHANNEL_ID);
+    if (!boostChannel) return;
+
+    const testMesaj = await boostChannel.send(
+      `💗 ${message.author} az önce sunucuya takviye yaptı!`
+    );
+
+    await testMesaj.react('🎀');
+  }
+});
 client.login(process.env.TOKEN);
