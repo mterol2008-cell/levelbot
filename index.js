@@ -77,7 +77,7 @@ client.on('messageCreate', async (message) => {
   cooldowns.set(userId, now);
 
   // 5-15 XP arası
-  const gainedXp = 150;;
+  const gainedXp = 150;
 
   data.xp += gainedXp;
 
