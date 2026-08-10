@@ -8,7 +8,9 @@ const {
 } = require('discord.js');
 
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
+const { GlobalFonts } = require('@napi-rs/canvas');
 
+console.log('Fontlar:', GlobalFonts.families);
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
