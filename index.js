@@ -7,9 +7,15 @@ const {
   AttachmentBuilder
 } = require('discord.js');
 
+const path = require('path');
 const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
 
-GlobalFonts.registerFromPath('./Roboto-Regular.ttf', 'Roboto');
+const fontPath = path.join(__dirname, 'Roboto-Regular.ttf');
+const fontLoaded = GlobalFonts.registerFromPath(fontPath, 'Roboto');
+
+console.log('Font yolu:', fontPath);
+console.log('Font yüklendi mi:', fontLoaded);
+console.log('Fontlar:', GlobalFonts.families);
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -92,12 +98,12 @@ if (message.content.toLowerCase() === '!level') {
 
   // Kullanıcı adı
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px Roboto';
+  ctx.font = 'bold 24px "Roboto"';
   ctx.fillText(message.author.username, 145, 55);
 
   // Level
   ctx.fillStyle = '#b9bbbe';
-  ctx.font = '18px Roboto';
+ ctx.font = '18px "Roboto"';
   ctx.fillText(`Level ${data.level}`, 145, 85);
 
   // XP bar arka planı
@@ -119,7 +125,7 @@ if (message.content.toLowerCase() === '!level') {
 
   // XP yazısı
   ctx.fillStyle = '#ffffff';
-  ctx.font = '15px sans-serif';
+ ctx.font = '15px "Roboto"';
   ctx.fillText(`${data.xp} / ${required} XP`, 145, 155);
 
   const attachment = new AttachmentBuilder(
