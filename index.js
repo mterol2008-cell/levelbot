@@ -68,9 +68,8 @@ client.on('messageCreate', async (message) => {
   }
 
   const data = xpData[userId];
-
+  
   // !level komutu
-// !level komutu
 if (message.content.toLowerCase() === '!level') {
   const required = neededXp(data.level);
 
@@ -82,6 +81,7 @@ if (message.content.toLowerCase() === '!level') {
 
   // Arka plan
   ctx.fillStyle = '#18181f';
+  ctx.beginPath();
   ctx.roundRect(0, 0, width, height, 15);
   ctx.fill();
 
