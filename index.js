@@ -67,51 +67,110 @@ client.on('messageCreate', async (message) => {
     };
   }
 
-  const data = xpData[userId];
-  
-  // !level komutu
+ // !level komutu - gelişmiş mor kart
 if (message.content.toLowerCase() === '!level') {
   const required = neededXp(data.level);
 
-  const width = 500;
-  const height = 180;
+  // Rank hesaplama
+  const ranking = Object.entries(xpData)
+    .sort((a, b) => {
+      if (b[1].level !== a[1].level) {
+        return b[1].level - a[1].level;
+      }
+      return b[1].xp - a[1].xp;
+    });
+
+  const rankIndex = ranking.findIndex(([id]) => id === userId);
+  const rank = rankIndex + 1;
+  const totalUsers = ranking.length;
+  const topPercent = Math.max(1, Math.ceil((rank / totalUsers) * 100));
+
+  const width = 720;
+  const height = 200;
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
 
   // Arka plan
-  ctx.fillStyle = '#18181f';
+  const bg = ctx.createLinearGradient(0, 0, width, height);
+  bg.addColorStop(0, '#171225');
+  bg.addColorStop(0.5, '#121321');
+  bg.addColorStop(1, '#10131d');
+
+  ctx.fillStyle = bg;
   ctx.beginPath();
-  ctx.roundRect(0, 0, width, height, 15);
+  ctx.roundRect(0, 0, width, height, 18);
   ctx.fill();
+
+  // Mor kenarlık
+  ctx.strokeStyle = '#4f2b7a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(1, 1, width - 2, height - 2, 18);
+  ctx.stroke();
 
   // Profil fotoğrafı
   const avatar = await loadImage(
-    message.author.displayAvatarURL({ extension: 'png', size: 256 })
+    message.author.displayAvatarURL({
+      extension: 'png',
+      size: 256
+    })
   );
 
+  // Profil mor dış çember
+  ctx.shadowColor = '#8b5cf6';
+  ctx.shadowBlur = 18;
+  ctx.strokeStyle = '#8b5cf6';
+  ctx.lineWidth = 4;
+
+  ctx.beginPath();
+  ctx.arc(90, 95, 59, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Profil fotoğrafını yuvarlak yap
   ctx.save();
   ctx.beginPath();
-  ctx.arc(75, 75, 50, 0, Math.PI * 2);
-  ctx.closePath();
+  ctx.arc(90, 95, 55, 0, Math.PI * 2);
   ctx.clip();
-  ctx.drawImage(avatar, 25, 25, 100, 100);
+  ctx.drawImage(avatar, 35, 40, 110, 110);
   ctx.restore();
+
+  // LVL rozeti
+  ctx.fillStyle = '#21172f';
+  ctx.strokeStyle = '#a66cff';
+  ctx.lineWidth = 3;
+
+  ctx.beginPath();
+  ctx.arc(137, 137, 23, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 11px "Roboto"';
+  ctx.textAlign = 'center';
+  ctx.fillText('LVL', 137, 134);
+
+  ctx.font = 'bold 15px "Roboto"';
+  ctx.fillText(`${data.level}`, 137, 150);
+
+  ctx.textAlign = 'left';
 
   // Kullanıcı adı
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px "Roboto"';
-  ctx.fillText(message.author.username, 145, 55);
+  ctx.font = 'bold 27px "Roboto"';
+  ctx.fillText(message.author.username, 180, 63);
 
   // Level
-  ctx.fillStyle = '#b9bbbe';
-  ctx.font = '18px "Roboto"';
-  ctx.fillText(`Level ${data.level}`, 145, 85);
+  ctx.fillStyle = '#a855f7';
+  ctx.font = 'bold 20px "Roboto"';
+  ctx.fillText(`Level ${data.level}`, 180, 98);
 
-  // XP bar arka planı
-  ctx.fillStyle = '#303038';
+  // XP bar arka plan
+  ctx.fillStyle = '#292b38';
   ctx.beginPath();
-  ctx.roundRect(145, 105, 310, 22, 11);
+  ctx.roundRect(180, 116, 300, 25, 13);
   ctx.fill();
 
   // XP oranı
@@ -119,16 +178,53 @@ if (message.content.toLowerCase() === '!level') {
 
   // Mor XP bar
   if (progress > 0) {
-    ctx.fillStyle = '#8b5cf6';
+    const xpGradient = ctx.createLinearGradient(180, 0, 480, 0);
+    xpGradient.addColorStop(0, '#7c3aed');
+    xpGradient.addColorStop(1, '#9333ea');
+
+    ctx.fillStyle = xpGradient;
     ctx.beginPath();
-    ctx.roundRect(145, 105, 310 * progress, 22, 11);
+    ctx.roundRect(180, 116, 300 * progress, 25, 13);
     ctx.fill();
   }
 
   // XP yazısı
+  ctx.fillStyle = '#a855f7';
+  ctx.font = 'bold 18px "Roboto"';
+  ctx.fillText(`${data.xp}`, 180, 170);
+
   ctx.fillStyle = '#ffffff';
-  ctx.font = '15px "Roboto"';
-  ctx.fillText(`${data.xp} / ${required} XP`, 145, 155);
+  ctx.fillText(` / ${required} XP`, 180 + ctx.measureText(`${data.xp}`).width, 170);
+
+  // Sağdaki ayırıcı çizgi
+  ctx.strokeStyle = '#292637';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(520, 30);
+  ctx.lineTo(520, 170);
+  ctx.stroke();
+
+  // RANK
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#8f8b9d';
+  ctx.font = 'bold 14px "Roboto"';
+  ctx.fillText('RANK', 620, 55);
+
+  ctx.fillStyle = '#9b5cff';
+  ctx.font = 'bold 42px "Roboto"';
+  ctx.fillText(`#${rank}`, 620, 100);
+
+  ctx.fillStyle = '#b9b6c5';
+  ctx.font = '18px "Roboto"';
+  ctx.fillText(`/ ${totalUsers}`, 620, 128);
+
+  // Top yüzdesi
+  ctx.fillStyle = '#a855f7';
+  ctx.font = '16px "Roboto"';
+  ctx.fillText(`◆ Top %${topPercent}`, 620, 160);
+
+  ctx.textAlign = 'left';
 
   const attachment = new AttachmentBuilder(
     canvas.toBuffer('image/png'),
