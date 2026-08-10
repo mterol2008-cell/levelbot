@@ -10,7 +10,7 @@ const {
 const path = require('path');
 const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
 
-const fontPath = path.join(__dirname, 'Roboto-Regular.ttf');
+const fontPath = path.join(__dirname, 'Roboto-VariableFont_wdth,wght.ttf');
 const fontLoaded = GlobalFonts.registerFromPath(fontPath, 'Roboto');
 
 console.log('Font yolu:', fontPath);
