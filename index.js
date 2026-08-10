@@ -91,12 +91,12 @@ if (message.content.toLowerCase() === '!level') {
 
   // Kullanıcı adı
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px sans-serif';
+  ctx.font = 'bold 24px Arial';
   ctx.fillText(message.author.username, 145, 55);
 
   // Level
   ctx.fillStyle = '#b9bbbe';
-  ctx.font = '18px sans-serif';
+  ctx.font = '18px Arial';
   ctx.fillText(`Level ${data.level}`, 145, 85);
 
   // XP bar arka planı
