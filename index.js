@@ -95,7 +95,7 @@ client.on('messageCreate', async (message) => {
       );
     }
   }
-});
+  
   saveData();
 });
 
