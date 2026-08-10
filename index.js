@@ -90,10 +90,21 @@ client.on('messageCreate', async (message) => {
     const levelChannel = message.guild.channels.cache.get(LEVEL_CHANNEL_ID);
 
     if (levelChannel) {
-      await levelChannel.send(
-        `Helal olsun ${message.author}, çok konuştun ama hadi ${data.level} level verelim de ağlama!`
-      );
-    }
+    await levelChannel.send({
+        embeds: [{
+            color: 0x5865F2,
+            title: '🎉 LEVEL ATLADIN!',
+            description: `${message.author} tebrikler!\n\n🏆 **Yeni Level: ${data.level}**`,
+            thumbnail: {
+                url: message.author.displayAvatarURL()
+            },
+            footer: {
+                text: '🔥 Mesaj yazmaya devam et!'
+            },
+            timestamp: new Date()
+        }]
+    });
+}
   }
   
   saveData();
