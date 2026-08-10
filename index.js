@@ -70,6 +70,7 @@ client.on('messageCreate', async (message) => {
   const data = xpData[userId];
 
   // !level komutu
+// !level komutu
 if (message.content.toLowerCase() === '!level') {
   const required = neededXp(data.level);
 
@@ -81,9 +82,10 @@ if (message.content.toLowerCase() === '!level') {
 
   // Arka plan
   ctx.fillStyle = '#18181f';
-  ctx.fillRect(0, 0, width, height);
+  ctx.roundRect(0, 0, width, height, 15);
+  ctx.fill();
 
-  // Kullanıcı profil fotoğrafı
+  // Profil fotoğrafı
   const avatar = await loadImage(
     message.author.displayAvatarURL({ extension: 'png', size: 256 })
   );
@@ -103,7 +105,7 @@ if (message.content.toLowerCase() === '!level') {
 
   // Level
   ctx.fillStyle = '#b9bbbe';
- ctx.font = '18px "Roboto"';
+  ctx.font = '18px "Roboto"';
   ctx.fillText(`Level ${data.level}`, 145, 85);
 
   // XP bar arka planı
@@ -112,7 +114,7 @@ if (message.content.toLowerCase() === '!level') {
   ctx.roundRect(145, 105, 310, 22, 11);
   ctx.fill();
 
-  // XP yüzdesi
+  // XP oranı
   const progress = Math.min(data.xp / required, 1);
 
   // Mor XP bar
@@ -125,7 +127,7 @@ if (message.content.toLowerCase() === '!level') {
 
   // XP yazısı
   ctx.fillStyle = '#ffffff';
- ctx.font = '15px "Roboto"';
+  ctx.font = '15px "Roboto"';
   ctx.fillText(`${data.xp} / ${required} XP`, 145, 155);
 
   const attachment = new AttachmentBuilder(
