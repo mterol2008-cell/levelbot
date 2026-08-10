@@ -27,7 +27,7 @@ const client = new Client({
 
 const LEVEL_CHANNEL_ID = '1536057096301191168';
 const BOOST_CHANNEL_ID = '1536077701935276084';
-const BOOST_EMOJI = '<:boost:1414631701589790761>';
+const BOOST_EMOJI = '<a:boost:1414631701589790761>';
 const DATA_FILE = process.env.RAILWAY_VOLUME_MOUNT_PATH
   ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/levels.json`
   : './levels.json';
