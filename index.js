@@ -67,6 +67,10 @@ client.on('messageCreate', async (message) => {
     };
   }
 
+
+const data = xpData[userId];
+
+// !level komutu
  // !level komutu - gelişmiş mor kart
 if (message.content.toLowerCase() === '!level') {
   const required = neededXp(data.level);
