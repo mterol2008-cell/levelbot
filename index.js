@@ -27,6 +27,7 @@ const client = new Client({
 
 const LEVEL_CHANNEL_ID = '1536057096301191168';
 const BOOST_CHANNEL_ID = '1536077701935276084';
+const BOOST_EMOJI = '<:boost:1414631701589790761>';
 const DATA_FILE = process.env.RAILWAY_VOLUME_MOUNT_PATH
   ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/levels.json`
   : './levels.json';
@@ -293,7 +294,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
 
     try {
       const mesaj = await boostChannel.send(
-        `💗 ${newMember} az önce sunucuya takviye yaptı!`
+        `${BOOST_EMOJI} ${newMember} az önce sunucuya takviye yaptı!`
       );
 
       await mesaj.react('🎀');
@@ -310,7 +311,7 @@ client.on('messageCreate', async (message) => {
     if (!boostChannel) return;
 
     const testMesaj = await boostChannel.send(
-      `💗 ${message.author} az önce sunucuya takviye yaptı!`
+    `${BOOST_EMOJI} ${message.author} az önce sunucuya takviye yaptı!`
     );
 
     await testMesaj.react('🎀');
