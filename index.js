@@ -3,8 +3,11 @@ require('dotenv').config();
 const fs = require('fs');
 const {
   Client,
-  GatewayIntentBits
+  GatewayIntentBits,
+  AttachmentBuilder
 } = require('discord.js');
+
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
 const client = new Client({
   intents: [
@@ -60,13 +63,73 @@ client.on('messageCreate', async (message) => {
   const data = xpData[userId];
 
   // !level komutu
-  if (message.content.toLowerCase() === '!level') {
-    const required = neededXp(data.level);
+if (message.content.toLowerCase() === '!level') {
+  const required = neededXp(data.level);
 
-    return message.reply(
-      `📊 Levelin: **${data.level}** | XP: **${data.xp}/${required}**`
-    );
+  const width = 500;
+  const height = 180;
+
+  const canvas = createCanvas(width, height);
+  const ctx = canvas.getContext('2d');
+
+  // Arka plan
+  ctx.fillStyle = '#18181f';
+  ctx.fillRect(0, 0, width, height);
+
+  // Kullanıcı profil fotoğrafı
+  const avatar = await loadImage(
+    message.author.displayAvatarURL({ extension: 'png', size: 256 })
+  );
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(75, 75, 50, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(avatar, 25, 25, 100, 100);
+  ctx.restore();
+
+  // Kullanıcı adı
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.fillText(message.author.username, 145, 55);
+
+  // Level
+  ctx.fillStyle = '#b9bbbe';
+  ctx.font = '18px sans-serif';
+  ctx.fillText(`Level ${data.level}`, 145, 85);
+
+  // XP bar arka planı
+  ctx.fillStyle = '#303038';
+  ctx.beginPath();
+  ctx.roundRect(145, 105, 310, 22, 11);
+  ctx.fill();
+
+  // XP yüzdesi
+  const progress = Math.min(data.xp / required, 1);
+
+  // Mor XP bar
+  if (progress > 0) {
+    ctx.fillStyle = '#8b5cf6';
+    ctx.beginPath();
+    ctx.roundRect(145, 105, 310 * progress, 22, 11);
+    ctx.fill();
   }
+
+  // XP yazısı
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '15px sans-serif';
+  ctx.fillText(`${data.xp} / ${required} XP`, 145, 155);
+
+  const attachment = new AttachmentBuilder(
+    canvas.toBuffer('image/png'),
+    { name: 'level.png' }
+  );
+
+  return message.reply({
+    files: [attachment]
+  });
+}
 
   // 30 saniyelik XP bekleme süresi
   const now = Date.now();
